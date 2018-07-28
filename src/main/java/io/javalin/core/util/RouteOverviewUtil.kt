@@ -7,7 +7,7 @@
 package io.javalin.core.util
 
 import io.javalin.Javalin
-import sun.reflect.ConstantPool
+import jdk.internal.reflect.ConstantPool
 
 object RouteOverviewUtil {
 
@@ -111,14 +111,15 @@ object RouteOverviewUtil {
                         <td>Roles</td>
                     </tr>
                 </thead>
-                ${app.handlerMetaInfo.map { (httpMethod, path, handler, roles) ->
+                ${app.handlerMetaInfo.map { (httpMethod, path, handler, roles, documentation) ->
             """
-                    <tr class="method $httpMethod">
+                    <tr onclick="openDocumentation" class="method $httpMethod">
                         <td>$httpMethod</span></td>
                         <td>$path</td>
                         <td><b>${handler.metaInfo}</b></td>
                         <td>$roles</td>
                     </tr>
+                    <tr class="documentation-box" style="width:100%;heigh:auto;display:none;">$documentation</tr>
                     """
         }.joinToString("")}
             </table>
@@ -137,6 +138,7 @@ object RouteOverviewUtil {
                         document.querySelector("tbody").children[i].outerHTML = pair.row.outerHTML
                     });
                 });
+                const openDocumentation = function(evt){evt.target.nextSibling.style.display = (evt.target.nextSibling.style.display==='none')?'block':'none';};
             </script>
         </body>
     """

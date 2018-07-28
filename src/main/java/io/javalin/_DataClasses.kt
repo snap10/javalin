@@ -40,4 +40,4 @@ enum class JavalinEvent {
     SERVER_STOPPED
 }
 
-data class HandlerMetaInfo(val httpMethod: HandlerType, val path: String, val handler: Any, val roles: Set<Role>)
+data class HandlerMetaInfo(val httpMethod: HandlerType, val path: String, val handler: Any, val roles: Set<Role>, val documentation: String)
