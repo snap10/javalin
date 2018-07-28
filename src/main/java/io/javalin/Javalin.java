@@ -440,7 +440,7 @@ public class Javalin {
         return addHandler(httpMethod, path, handler, new HashSet<>()); // no roles set for this route (open to everyone)
     }
 
-    // HTTP verbs
+    // HTTP verbs TODO Documentation
 
     /**
      * Adds a GET request handler for the specified path to the instance.
@@ -683,7 +683,8 @@ public class Javalin {
         WsHandler configuredWebSocket = new WsHandler();
         ws.accept(configuredWebSocket);
         wsPathMatcher.getWsEntries().add(new WsEntry(prefixedPath, configuredWebSocket));
-        handlerMetaInfo.add(new HandlerMetaInfo(HandlerType.WEBSOCKET, prefixedPath, ws, new HashSet<>()));
+        //TODO
+        handlerMetaInfo.add(new HandlerMetaInfo(HandlerType.WEBSOCKET, prefixedPath, ws, new HashSet<>(),"No Documentation present"));
         return this;
     }
 
