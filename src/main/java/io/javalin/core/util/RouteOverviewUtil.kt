@@ -7,8 +7,7 @@
 package io.javalin.core.util
 
 import io.javalin.Javalin
-import jdk.internal.reflect.ConstantPool
-
+import sun.reflect.ConstantPool
 object RouteOverviewUtil {
 
     @JvmStatic
@@ -113,33 +112,52 @@ object RouteOverviewUtil {
                 </thead>
                 ${app.handlerMetaInfo.map { (httpMethod, path, handler, roles, documentation) ->
             """
-                    <tr onclick="openDocumentation" class="method $httpMethod">
+                    <tr class="method $httpMethod">
                         <td>$httpMethod</span></td>
                         <td>$path</td>
                         <td><b>${handler.metaInfo}</b></td>
                         <td>$roles</td>
                     </tr>
-                    <tr class="documentation-box" style="width:100%;heigh:auto;display:none;">$documentation</tr>
+                    <tr class="documentation-box" style="width:100%;height:auto;display:none;">
+                        <td colspan=42>
+                          <div>$documentation</div>
+                        </td>
+                    </tr>
                     """
         }.joinToString("")}
             </table>
-            <script>
-                const cachedRows = Array.from(document.querySelectorAll("tbody tr"));
-                const verbOrder = ["BEFORE", "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "TRACE", "HEAD", "AFTER", "WEBSOCKET"];
-                document.querySelector("thead").addEventListener("click", function (e) {
-                    cachedRows.map(function (el) {
-                        return {key: el.children[e.target.cellIndex].textContent, row: el};
-                    }).sort((a, b) => {
-                        if (e.target.textContent === "Method") {
-                            return verbOrder.indexOf(a.key) - verbOrder.indexOf(b.key);
-                        }
-                        return a.key.localeCompare(b.key);
-                    }).forEach((pair, i) => {
-                        document.querySelector("tbody").children[i].outerHTML = pair.row.outerHTML
-                    });
-                });
-                const openDocumentation = function(evt){evt.target.nextSibling.style.display = (evt.target.nextSibling.style.display==='none')?'block':'none';};
-            </script>
+                  <script>
+                        const openDocumentation = function (evt) {
+                          var element = evt.currentTarget
+                          var docbox = element.nextElementSibling
+                          if (docbox) {
+                            docbox.style.display = (!docbox.style || docbox.style.display === 'none') ? 'table-row' : 'none';
+                          }
+                        };
+                        const cachedRows = Array.from(document.querySelectorAll("tbody tr"));
+                        const verbOrder = ["BEFORE", "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS", "TRACE", "HEAD", "AFTER",
+                          "WEBSOCKET"
+                        ];
+                        document.querySelector("thead").addEventListener("click", function (e) {
+                          cachedRows.map(function (el) {
+                            return {
+                              key: el.children[e.target.cellIndex].textContent,
+                              row: el
+                            };
+                          }).sort((a, b) => {
+                            if (e.target.textContent === "Method") {
+                              return verbOrder.indexOf(a.key) - verbOrder.indexOf(b.key);
+                            }
+                            return a.key.localeCompare(b.key);
+                          }).forEach((pair, i) => {
+                            document.querySelector("tbody").children[i].outerHTML = pair.row.outerHTML
+                          });
+                        });
+                        Array.from(document.querySelector("tbody").children).map(child => {
+                          child.addEventListener("click", openDocumentation)
+                          child.style.cursor='pointer'
+                        })
+                  </script>
         </body>
     """
     }
